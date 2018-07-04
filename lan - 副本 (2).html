@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style>
+		.container{
+			margin:0px auto;
+			height:100%;
+			padding-top:20px;
+		}
+		.imgbox,.imgbox2{
+			width:400px;
+			padding-left:10px;
+		}
+		.imgbox2{
+			height:400px;
+			overflow:scroll;
+		}
+		img{
+			border:1px solid #666;
+			width:380px;
+			padding-bottom:10px;
+			float:left;
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+		<div class="imgbox">
+			<img src="chuan.jpg" data-url="l.png" />
+			<img src="cat.gif" data-url="l.png" />
+			<img src="hai.jpg" data-url="l.png" />
+			<img src="yu.png" data-url="hou.jpg" />
+			<img src="yu.png" data-url="chuan.jpg" />
+			<img src="yu.png" data-url="cat.gif" />
+			<img src="yu.png" data-url="hai.jpg" />
+			<img src="yu.png" data-url="hou.jpg" />
+			<img src="yu.png" data-url="chuan.jpg" />
+			<img src="yu.png" data-url="cat.gif"/>
+		</div>
+		<div class="imgbox2" id="imgbox2">
+				<img src="chuan.jpg" data-url="chuan.jpg" />
+				<img src="cat.gif" data-url="cat.gif" />
+				<img src="hai.jpg" data-url="hai.jpg" />
+				<img src="yu.png" data-url="hou.jpg" />
+				<img src="yu.png" data-url="chuan.jpg" />
+				<img src="yu.png" data-url="cat.gif" />
+				<img src="yu.png" data-url="hai.jpg" />
+				<img src="yu.png" data-url="hou.jpg" />
+				<img src="yu.png" data-url="chuan.jpg" />
+				<img src="yu.png" data-url="cat.gif"/>
+		</div>
+</div>
+<script>
+	window.onload = function(){
+    /*
+			运行后没有达到预期效果，输出 document.body.scrollTop 的值一看，一直都是 0。一翻折腾，原来是 DTD 的问题，要是页面直接用 <html> 开头的话就没有问题了。但是要符合 web 标准，DTD 当然是不能少的。
+
+			如果有 DTD 时用，那就用 document.documentElement.scrollTop 代替 document.body.scrollTop 就可以了。
+    */
+		// 图片页面里滚动懒加载
+		var winH = document.documentElement.clientHeight; //获取当前客户端文档的高度
+		console.log('winh='+winH);
+		imgs = document.getElementsByTagName("img"); // 获取图片
+		window.onscroll = function(){
+      imgtop = 500;
+			// 获取滚动条距离顶端的高度
+			var scTop = document.documentElement.scrollTop || document.body.scrollTop;
+			console.log('scTop='+scTop);
+			for(var i=0;i<imgs.length;i++){
+				imgTop = imgs[i].offsetTop; //获取当前图片距离页面顶端的距离
+
+				console.log('imgTop-winH='+(imgTop-winH));
+				console.log('imgTop='+imgTop);
+				// 判断当前图片距离页面顶端-文档高度是否小于 滚动条距离顶端的距离了，如果小于说明该加载图片了
+				if(imgTop-winH < scTop && imgTop-winH>0 && imgs[i].getAttribute("data-url")!=imgs[i].getAttribute("src")){
+					 dataUrl = imgs[i].getAttribute("data-url");
+					 imgs[i].setAttribute('src',dataUrl);
+				}
+			}		
+		}
+ 
+ 		//div滚动懒加载
+ 		var divH = 400;  // div的高度
+ 		div      = document.getElementById("imgbox2");//获取div
+ 		divimgs  = div.getElementsByTagName("img"); // 获取div下的图片
+ 		div.onscroll = function(){
+ 				divdivTop = div.offsetTop; //获取div离页面顶端的距离
+ 				divTop    = div.scrollTop; //获取滚动条头部的距离
+ 				console.log(divTop+"#divTop");
+ 				for(var k=0;k<divimgs.length;k++){
+   
+ 					divimgTop = divimgs[k].offsetTop; //获取图片距离页面顶端的距离
+
+ 					// console.log('divTop='+divTop);
+ 					// console.log('divimgTop='+divimgTop);
+ 					// console.log('divdivTop='+divdivTop);
+ 					// console.log('divimgTop-divdivTop='+(divimgTop-divdivTop));
+ 					/*
+					 图片距离顶端的距离 - div距离顶端的距离 - div高度 看是否 小于 div里滚动条距离div头部的距离,如果小于就说明该加载下一张了
+ 					*/ 
+					if(divimgTop-divdivTop-divH < divTop && divimgs[k].getAttribute("data-url")!=divimgs[k].getAttribute("src")){
+		         console.log("zhi xing le");
+						 divdataUrl = divimgs[k].getAttribute("data-url"); //获取data-url的值
+						 divimgs[k].setAttribute('src',divdataUrl); // 更改src
+					}
+
+ 				}
+ 		}
+
+
+	}
+</script>
+</body>
+</html>
